@@ -1,0 +1,147 @@
+[project]
+name = "soml-lang"
+version = "0.0.2"
+description = "Read and write SOML, a config format for humans"
+readme = "readme.md"
+license = "MIT"
+license-files = ["license"]
+authors = [
+	{name = "Sindre Sorhus", email = "sindresorhus@gmail.com"},
+]
+requires-python = ">=3.14"
+dependencies = []
+keywords = [
+	"soml",
+	"config",
+	"configuration",
+	"parser",
+	"serializer",
+	"json",
+	"toml",
+	"yaml",
+]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Intended Audience :: Developers",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.14",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Typing :: Typed",
+]
+
+[project.urls]
+Repository = "https://github.com/soml-lang/soml-python"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "soml"
+
+[dependency-groups]
+dev = [
+	"hypothesis",
+	"mypy",
+	"pyright",
+	"pytest",
+	"ruff",
+]
+
+bench = [
+	"orjson",
+	"tomli-w",
+	"tomlkit",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "src", "readme.md"]
+addopts = ["--doctest-modules", "--doctest-glob=readme.md", "--strict-markers"]
+xfail_strict = true
+# Doctest expands tabs in expected output, and canonical form indents with tabs.
+doctest_optionflags = ["NORMALIZE_WHITESPACE"]
+
+[tool.mypy]
+python_version = "3.14"
+files = ["src", "tests", "bench"]
+strict = true
+strict_bytes = true
+warn_unreachable = true
+enable_error_code = [
+	"deprecated",
+	"exhaustive-match",
+	"ignore-without-code",
+	"possibly-undefined",
+	"redundant-expr",
+	"truthy-bool",
+	"unused-awaitable",
+]
+
+[tool.pyright]
+include = ["src"]
+typeCheckingMode = "strict"
+pythonVersion = "3.14"
+
+[tool.ruff]
+line-length = 200
+target-version = "py314"
+
+[tool.ruff.format]
+indent-style = "tab"
+quote-style = "single"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+	# Conflict with the formatter, which indents with tabs and uses single quotes.
+	"W191",
+	"D206",
+	"D300",
+	"Q000",
+	"Q001",
+	"Q002",
+	"Q003",
+	"COM812",
+	"ISC001",
+	# Docstrings are written in the readme's voice, not in the pydocstyle conventions.
+	"D",
+	# Errors are raised with messages built in place, as the standard library does.
+	"EM",
+	"TRY003",
+	# The parser is one long function per grammar rule.
+	"C901",
+	"PLR0911",
+	"PLR0912",
+	"PLR0915",
+	"PLR2004",
+	# A function takes the arguments it needs.
+	"PLR0913",
+	# A comment that is code is kept on purpose.
+	"ERA001",
+	# Lines are never hard-wrapped.
+	"E501",
+	# No copyright header in each file. The license file covers them.
+	"CPY001",
+	# Ruff does not see that a method annotated `NoReturn` ends the function.
+	"RET503",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"bench/**" = [
+	"INP001",
+	"T201",
+	"TC003",
+]
+# The nodes' `_origin` and `_snapshot()` are private to the module, not to their class.
+"src/soml/tree.py" = ["SLF001"]
+"tests/**" = [
+	"S101",
+	# Seeded pseudo-random input is the point of the generated tests.
+	"S311",
+	"ANN401",
+	"INP001",
+	"PLC2701",
+	"SLF001",
+]
