@@ -1,6 +1,6 @@
 [project]
 name = "soml-lang"
-version = "0.0.2"
+version = "0.0.3"
 description = "Read and write SOML, a config format for humans"
 readme = "readme.md"
 license = "MIT"
